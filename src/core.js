@@ -1,5 +1,5 @@
 (function(exports){
-	
+
 	var Marrow = function(component, fn){
 		if(
 			!(this instanceof Marrow)
