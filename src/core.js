@@ -9,7 +9,7 @@
 		// extend component
 		component.prototype = Marrow.prototype;
 		// return it extended with our goodness
-		if(typeof fn === function){
+		if(typeof fn === "function"){
 			fn(component);
 		}
 		return this;
@@ -47,7 +47,7 @@
 	Marrow.prototype.emit = function(event, evntObj){
 
 		if(
-			typeof event === "string"
+			typeof event === "string" &&
 			typeof this._events[event] === "object" && 
 			this._events[event].length
 		){
@@ -71,13 +71,13 @@
 					throw(err);
 				}
 			}
-		}
-	}
+		};
+	};
 
 	// closing and opening the component
 
 	Marrow.prototype.close = function(){
-		if(typeof this.__close === function){
+		if(typeof this.__close === "function"){
 			this.__close();
 		}
 		this.emit("close");
@@ -85,7 +85,7 @@
 	};
 
 	Marrow.prototype.open = function(){
-		if(typeof this.__open === function){
+		if(typeof this.__open === "function"){
 			this.__open();
 		}
 		this.emit("open");
@@ -110,7 +110,7 @@
 	// to remove
 
 	Marrow.prototype.remove = function(){
-		if(typeof this.__remove === function){
+		if(typeof this.__remove === "function"){
 			this.__remove();
 		}
 		this.emit("removed");
