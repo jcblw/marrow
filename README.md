@@ -1,6 +1,6 @@
 ## Marrow
 
-Marrow.js is what the bones are inside the bones of your framework, it basic is building blocks for your web components. It packs in a couple conventions that I use for my web components plus a event emitter.
+Marrow.js is inside the bones of your framework, it basic is building blocks for your web components. It packs in a couple conventions that I use for my web components plus a event emitter.
 
 ### To Use
 
