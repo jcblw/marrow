@@ -12,7 +12,8 @@
 		if(typeof fn === "function"){
 			fn(component);
 		}
-		return this;
+
+		return component;
 	};
 
 	Marrow.prototype = Marrow.module = {};
@@ -27,15 +28,14 @@
 			typeof callback === "function" &&
 			typeof event === "string"
 		){
-			if((typeof this._events[event] === "object")){
+			if(!(typeof this._events[event] === "object")){
 				this._events[event] = [];
 			}
 
 			if(
-				typeof this.events[event] === "object" && 
-				this.events[event].length
+				typeof this._events[event].length === "number"
 			){
-				this.events[event].push(callback);
+				this._events[event].push(callback);
 			}
 		}
 
@@ -51,9 +51,9 @@
 			typeof this._events[event] === "object" && 
 			this._events[event].length
 		){
-			var params = arguments.slice(2);
-			for(var i = 0; i < this.events[event].length; i += 1){
-				this._events[event](evntObj, params);
+
+			for(var i = 0; i < this._events[event].length; i += 1){
+				this._events[event][i](evntObj);
 			}
 		}
 
@@ -123,5 +123,6 @@
 	);
 
 	// compile to a web component when available
+	exports.Marrow = Marrow;
 
 }(this));
