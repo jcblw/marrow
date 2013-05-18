@@ -53,7 +53,7 @@
 		){
 
 			for(var i = 0; i < this._events[event].length; i += 1){
-				this._events[event][i](evntObj);
+				this._events[event][i].apply(null, arguments.slice(1));
 			}
 		}
 
