@@ -52,8 +52,10 @@
 			this._events[event].length
 		){
 
+			var arg = [].slice.call(arguments);
+
 			for(var i = 0; i < this._events[event].length; i += 1){
-				this._events[event][i].apply(null, arguments.slice(1));
+				this._events[event][i].apply(null, arg.slice(1));
 			}
 		}
 
