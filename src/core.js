@@ -63,66 +63,50 @@
 
 	// small utitlity to
 
-	Marrow.prototype.__setFn = Marrow.__setFn = function(key, err){
-		return function(func){
-			if(typeof func === "function"){
-				this[key] = func;
-			}else{
-				if(err){
-					// just to give hints
-					throw(err);
+	Marrow.prototype.__setFn = Marrow.__setFn = function(key, fn){
+		if(typeof func === "function"){
+			this[key] = func;
+		}
+	};
+
+	// create an method that triggers an event
+	// eg. ::to("die", function(){ele.remove()})
+	// now you can bind to ::on("die")
+
+	Marrow.prototype.to = function(type, fn, state){
+		if(
+			typeof type === "string" &&
+			typeof fn === "function"
+		){
+			var store = "__" + type; // a `private` variable name
+			this.__setFn(store, fn);
+
+			this[type] = function(){
+				if(typeof this[store] === "function"){
+					this[store]();
 				}
-			}
-		};
-	};
 
-	// closing and opening the component
+				//some small backward compatibility <<remove
+				if(type === "open"){
+					this.__state = 1;
+				}else if(type === "close"){
+					this.__state = 0;
+				}
 
-	Marrow.prototype.close = function(){
-		if(typeof this.__close === "function"){
-			this.__close();
+				if(typeof state === "number" || state){
+					this.__state = state;
+				}
+
+				this.emit(type);
+			};
 		}
-		this.emit("close");
-		this.__state = 0;
+
 	};
-
-	Marrow.prototype.open = function(){
-		if(typeof this.__open === "function"){
-			this.__open();
-		}
-		this.emit("open");
-		this.__state = 1;
-	};
-
-	Marrow.prototype.toClose = Marrow.__setFn(
-		"__close", 
-		"Marrow::toClose takes a function as the first argument"
-	);
-
-	Marrow.prototype.toOpen = Marrow.__setFn(
-		"__open", 
-		"Marrow::toOpen takes a function as the first argument"
-	);
 
 	// maybe make a more verbose state, also more conventional
 	Marrow.prototype.getState = function(){
 		return this.__state;
 	};
-
-	// to remove
-
-	Marrow.prototype.remove = function(){
-		if(typeof this.__remove === "function"){
-			this.__remove();
-		}
-		this.emit("removed");
-		this.__state = 0;
-	};
-
-	Marrow.prototype.toRemove = Marrow.__setFn(
-		"__remove", 
-		"Marrow::toRemove takes a function as the first argument"
-	);
 
 	// compile to a web component when available
 	exports.Marrow = Marrow;
