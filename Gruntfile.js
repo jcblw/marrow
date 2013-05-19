@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
 
   // Project configuration
+  var files = ["src/core.js", "src/events.js", "src/build.js"];
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -12,7 +13,7 @@ module.exports = function(grunt) {
         banner: "<%=banner%>"
       },
       build: {
-        src: ['src/*.js'],
+        src: files,
         dest: 'build/<%= pkg.name.toLowerCase() %>.min.js'
       }
     },
@@ -26,7 +27,7 @@ module.exports = function(grunt) {
         stripBanners : true
       },
       dist: {
-        src: ['src/*.js'],
+        src: files,
         dest: 'build/<%= pkg.name.toLowerCase() %>.js'
       }
     }

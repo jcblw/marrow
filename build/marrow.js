@@ -5,7 +5,7 @@
 
 (function(exports){
 
-	var Marrow = function(component, fn){
+	var Marrow = function(component, fn){ 
 		if(!(this instanceof Marrow)){
 			return new Marrow(component);
 		}
@@ -21,6 +21,18 @@
 	};
 
 	Marrow.prototype = Marrow.plus = {};
+
+	// maybe make a more verbose state, also more conventional
+	Marrow.prototype.getState = function(){
+		return this.__state;
+	};
+
+	// compile to a web component when available
+	exports.Marrow = Marrow;
+
+}(this));
+
+(function(Marrow){
 
 	//event emmiter
 
@@ -47,9 +59,7 @@
 			}
 		}
 
-
 		return this;
-
 	};
 
 	Marrow.prototype.emit = function(event, evntObj){
@@ -71,6 +81,10 @@
 
 	};
 
+}(Marrow));
+
+(function(Marrow){
+	
 	// create an method that triggers an event
 	// eg. ::to("die", function(){ele.remove()})
 	// now you can bind to ::on("die")
@@ -102,12 +116,4 @@
 
 	};
 
-	// maybe make a more verbose state, also more conventional
-	Marrow.prototype.getState = function(){
-		return this.__state;
-	};
-
-	// compile to a web component when available
-	exports.Marrow = Marrow;
-
-}(this));
+}(Marrow));
