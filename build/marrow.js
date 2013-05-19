@@ -1,18 +1,18 @@
 /*
- * Marrow.js - 0.0.4 
+ * Marrow.js - 0.0.6 
  * Author : Jacob Lowe <http://jacoblowe.me> 
  */
 
 (function(exports){
 
 	var Marrow = function(component, fn){
-		if(
-			!(this instanceof Marrow)
-		){
+		if(!(this instanceof Marrow)){
 			return new Marrow(component);
 		}
-		// extend component
-		component.prototype = Marrow.prototype;
+		// extend component sorry ie8
+		if( Object.create && Object.getPrototypeOf ){
+			component.prototype = Object.create(Object.getPrototypeOf(this));
+		}
 		// return it extended with our goodness
 		if(typeof fn === "function"){
 			fn(component);
@@ -21,11 +21,13 @@
 		return component;
 	};
 
-	Marrow.prototype = Marrow.module = {};
+	Marrow.prototype = Marrow.plus = {};
 
 	//event emmiter
 
-	Marrow.prototype._events = {};
+	Marrow.prototype.__events = function(){
+		this._events = {};
+	};
 
 	Marrow.prototype.on = function(event, callback){
 
@@ -33,13 +35,15 @@
 			typeof callback === "function" &&
 			typeof event === "string"
 		){
+			if(!this._events){
+				this.__events(); // create events object
+			}
+
 			if(typeof this._events[event] !== "object"){
 				this._events[event] = [];
 			}
 
-			if(
-				typeof this._events[event].length === "number"
-			){
+			if(typeof this._events[event].length === "number"){
 				this._events[event].push(callback);
 			}
 		}
@@ -52,31 +56,40 @@
 	Marrow.prototype.emit = function(event, evntObj){
 
 		if(
+			typeof this._events === "object" &&
 			typeof event === "string" &&
 			typeof this._events[event] === "object" && 
 			this._events[event].length
 		){
 
-			var arg = [].slice.call(arguments);
+			var arg = [].slice.call(arguments); // copying argument so we can pass
+			// though a chunk of them
 
 			for(var i = 0; i < this._events[event].length; i += 1){
-				this._events[event][i].apply(null, arg.slice(1));
+				this._events[event][i].apply(this, arg.slice(1)); 
 			}
 		}
 
 	};
 
-	// small utitlity to
-
-	Marrow.prototype.__setFn = Marrow.__setFn = function(key, fn){
-		if(typeof func === "function"){
-			this[key] = func;
-		}
-	};
-
 	// create an method that triggers an event
 	// eg. ::to("die", function(){ele.remove()})
 	// now you can bind to ::on("die")
+
+	Marrow.prototype.__extend = function(type, state, store){
+		var self = this;
+		this[type] = function(){
+			if(typeof this[store] === "function"){
+				self[store].apply(this, arguments);
+			}
+
+			if(typeof state === "number"){
+				self.__state = state;
+			}
+
+			self.emit(type);
+		};
+	};
 
 	Marrow.prototype.to = function(type, fn, state){
 		if(
@@ -84,26 +97,8 @@
 			typeof fn === "function"
 		){
 			var store = "__" + type; // a `private` variable name
-			this.__setFn(store, fn);
-
-			this[type] = function(){
-				if(typeof this[store] === "function"){
-					this[store]();
-				}
-
-				//some small backward compatibility <<remove
-				if(type === "open"){
-					this.__state = 1;
-				}else if(type === "close"){
-					this.__state = 0;
-				}
-
-				if(typeof state === "number" || state){
-					this.__state = state;
-				}
-
-				this.emit(type);
-			};
+			this[store] = fn;
+			this.__extend(type, state, store);
 		}
 
 	};
