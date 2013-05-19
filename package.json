@@ -3,6 +3,12 @@
 	"version": "0.0.6",
 	"private": false,
 	"author": "Jacob Lowe <http://jacoblowe.me>",
+	"description" : "Marrow is constructor that extends your constructors to help emit events and create a conventions to help manage components",
+	"repository" : {
+		"type" : "git",
+		"url" : "https://github.com/jacoblwe20/marrow"
+	},
+	"license": "MIT",
 	"devDependencies": {
 		"grunt": "0.4.1",
 		"grunt-simple-mocha": "~0.3.2",

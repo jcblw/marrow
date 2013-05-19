@@ -1,6 +1,9 @@
 /*
  * Marrow.js - 0.0.6 
+ * Description : Marrow is constructor that extends your constructors to help emit events and create a conventions to help manage components 
+ * Project Url : https://github.com/jacoblwe20/marrow 
  * Author : Jacob Lowe <http://jacoblowe.me> 
+ * License : MIT 
  */
 
 (function(exports){

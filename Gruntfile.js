@@ -5,8 +5,12 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    banner : '/*\n * <%= pkg.name %>.js - <%= pkg.version %> \n' + 
+    banner : '/*' + 
+      '\n * <%= pkg.name %>.js - <%= pkg.version %> \n' + 
+      ' * Description : <%= pkg.description %> \n' +
+      ' * Project Url : <%= pkg.repository.url %> \n' +
       ' * Author : <%= pkg.author %> \n' +
+      ' * License : <%= pkg.license %> \n' +
       ' */\n\n',
     uglify: {
       options: {
