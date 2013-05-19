@@ -5,7 +5,7 @@
 			return new Marrow(component);
 		}
 		// extend component 
-		component.prototype = this
+		component.prototype = this;
 		
 		// return it extended with our goodness
 		if(typeof fn === "function"){

@@ -9,10 +9,9 @@
 		if(!(this instanceof Marrow)){
 			return new Marrow(component);
 		}
-		// extend component sorry ie8
-		if( Object.create && Object.getPrototypeOf ){
-			component.prototype = Object.create(Object.getPrototypeOf(this));
-		}
+		// extend component 
+		component.prototype = this;
+		
 		// return it extended with our goodness
 		if(typeof fn === "function"){
 			fn(component);
