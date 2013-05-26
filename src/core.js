@@ -22,7 +22,6 @@
 		return this.__state;
 	};
 
-	// compile to a web component when available
 	exports.Marrow = Marrow;
 
 }(this));

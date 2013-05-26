@@ -28,6 +28,36 @@
 		return this;
 	};
 
+	Marrow.prototype.off = function(event, fn){
+		if(
+			typeof this._events === "object" &&
+			typeof event === "string" &&
+			typeof this._events[event] === "object" && 
+			this._events[event].length
+		){
+
+			var events = this._events[event];
+
+			if(typeof fn === "function"){
+
+				for(var i = 0; i < events.length; i += 1){
+
+					if(events[i] === fn){ 
+						delete events[i]; // remove specific fn
+					}
+
+				}
+
+			}else{
+				events = []; // remove all events in group
+			}
+
+		}else if(!event){
+			this._events = {}; // remove all
+		}
+
+	};
+
 	Marrow.prototype.emit = function(event, evntObj){
 
 		if(
