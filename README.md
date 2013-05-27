@@ -78,6 +78,7 @@ component.off();
 component.getState(); // will be 2 from doStuff
 component.setState(1);
 component.getState(); // will be set to 1
+```
 
 #### `Warning`
 
