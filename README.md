@@ -59,7 +59,7 @@ component.to("doStuff", function(stuff){
 }, 2); // optional state
 
 //use
-component.doingStuff("Cool Stuff");
+component.doStuff("Cool Stuff");
 
 // unbind a event binding
 component.off("doStuff", doStuffHandle);
