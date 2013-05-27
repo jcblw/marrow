@@ -9,7 +9,7 @@
 		
 		// return it extended with our goodness
 		if(typeof fn === "function"){
-			fn(component);
+			fn(this);
 		}
 
 		return component;
