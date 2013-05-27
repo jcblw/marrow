@@ -4,13 +4,14 @@
 		if(!(this instanceof Marrow)){
 			return new Marrow(component);
 		}
-		// extend component 
-		component.prototype = this;
-		
+
 		// return it extended with our goodness
 		if(typeof fn === "function"){
 			fn(this);
 		}
+		// extend component 
+		component.prototype = this;
+		
 
 		return component;
 	};
