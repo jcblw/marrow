@@ -8,14 +8,14 @@
 	// prototype of Marrow. returns the first prameter with an extended
 	// prototype
 
-	var Marrow = function(component, fn){ 
-		if(!(this instanceof Marrow)){
-			return new Marrow(component);
+	var Marrow = function( component, fn ){ 
+		if( !( this instanceof Marrow ) ){
+			return new Marrow( component );
 		}
 
 		// return it extended with our goodness
-		if(typeof fn === "function"){
-			fn(this);
+		if( typeof fn === "function" ){
+			fn( this );
 		}
 		// extend component 
 		component.prototype = this;
@@ -39,8 +39,8 @@
 	// __state which is return in getState. Need to be a Number
 	// if not it will be evaluated as NaN
 
-	Marrow.prototype.setState = function(value){
-		this.__state = +value;
+	Marrow.prototype.setState = function( value ){
+		this.__state = +value; // + with evaluate this value a interger
 	};
 
 	exports.Marrow = Marrow;
