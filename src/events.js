@@ -79,7 +79,7 @@
 	// any other parameters passed into the emits method and will pass them to
 	// the and event binds... only omiting the first parameter, the event type.
 	// eg. obj.on("payload", function(payload){ /*Do stuff with payload*/});
-	// 	obj.emit("payload", payload);
+	// obj.emit("payload", payload);
 
 	Marrow.prototype.emit = function( event ){
 
