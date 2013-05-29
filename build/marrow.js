@@ -57,6 +57,18 @@
 
 (function(Marrow){
 
+	var 
+	// some local utilities
+	delimiter = /\:/g,
+	// simple function that splits apart event string into array
+	// input a string get out an array
+	parseEventString = function(str){
+		if(typeof str === "string"){
+			return str.split(delimiter);
+		}
+		return null;
+	};
+
 	// Marrow::__events creates the _events object ~ can probably
 	// be phased out
 
@@ -75,17 +87,25 @@
 			typeof callback === "function" &&
 			typeof event === "string"
 		){
+
+			var 
+			events = parseEventString(event),
+			// only support two layer events
+			e = ( events.length > 1 ) ? events[ 0 ] + "_" + events[ 1 ]  : events[ 0 ];
+
+
 			if( !this._events ){
 				this.__events(); // create events object
 			}
 
-			if( typeof this._events[ event ] !== "object" ){
-				this._events[ event ] = [];
+			if( typeof this._events[ e ] !== "object" ){
+				this._events[ e ] = [];
 			}
 
-			if( typeof this._events[ event ].length === "number" ){
-				this._events[ event ].push( callback );
+			if( typeof this._events[ e ].length === "number" ){
+				this._events[ e ].push( callback );
 			}
+			
 		}
 
 		return this;
@@ -142,16 +162,36 @@
 
 		if(
 			typeof this._events === "object" &&
-			typeof event === "string" &&
-			typeof this._events[ event ] === "object" && 
-			this._events[ event ].length
+			typeof event === "string"
 		){
 
-			var arg = [].slice.call( arguments ); // copying argument so we can pass
+			var 
+			events = parseEventString(event),
+			e,
+			arg = [].slice.call( arguments ); // copying argument so we can pass
 			// though a chunk of them
 
-			for( var i = 0; i < this._events[event].length; i += 1 ){
-				this._events[ event ][ i ].apply( this, arg.slice( 1 ) ); 
+			console.log(events);
+
+			if( !this._events ){
+				this.__events(); // create events object
+			}
+
+			for( var i = 0; i < events.length; i += 1 ){
+
+				e = ( i ) ? events[ 0 ] + "_" + events[ i ]  : events[ i ];	
+
+				if(
+					typeof this._events[ e ] === "object" && 
+					this._events[ e ].length
+				){
+
+					for( var q = 0; q < this._events[ e ].length; q += 1 ){
+						this._events[ e ][ q ].apply( this, arg.slice( 1 ) ); 
+					}
+
+				}
+
 			}
 		}
 
