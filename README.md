@@ -83,4 +83,4 @@ component.getState(); // will be set to 1
 #### `Warning`
 
 
-Its in very early stages so all of this is subject to change.
+Its in very early stages so some things are subject to change, I think the over arching ideas for events are set in stone but things like method creation may change.
