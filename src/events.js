@@ -114,8 +114,6 @@
 			arg = [].slice.call( arguments ); // copying argument so we can pass
 			// though a chunk of them
 
-			console.log(events);
-
 			if( !this._events ){
 				this.__events(); // create events object
 			}
