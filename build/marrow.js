@@ -220,7 +220,9 @@
 				self.__state = state;
 			}
 
-			self.emit( type );
+			var arr = [].concat(type, Array.prototype.slice.call(arguments));
+
+			self.emit.apply( this, arr );
 		};
 	};
 
