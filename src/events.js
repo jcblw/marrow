@@ -77,18 +77,23 @@
 
 				for( var i = 0; i < events.length; i += 1 ){
 
-					if( events[i] === fn ){ 
-						delete events[ i ]; // remove specific fn
+					if( '' + events[i] === '' + fn ){ 
+						this._events[ event ][ i ] = null; // remove specific fn
 					}
 
 				}
 
 			}else{
-				events = []; // remove all events in group
+				this._events[ event ] = []; // remove all events in group
 			}
 
-		}else if( !event ){
-			this._events = {}; // remove all
+		} else {
+			if( 
+				typeof event === 'undefined' &&
+				typeof fn === 'undefined' 
+			) {
+				this._events = {}; // remove all
+			}
 		}
 
 	};
@@ -120,7 +125,7 @@
 
 			for( var i = 0; i < events.length; i += 1 ){
 
-				e = ( i ) ? events[ 0 ] + "_" + events[ i ]  : events[ i ];	
+				e = ( i ) ? events[ 0 ] + "_" + events[ i ] : events[ i ];	
 
 				if(
 					typeof this._events[ e ] === "object" && 
@@ -128,12 +133,19 @@
 				){
 
 					for( var q = 0; q < this._events[ e ].length; q += 1 ){
-						this._events[ e ][ q ].apply( this, arg.slice( 1 ) ); 
+						var payload = ( !( i ) && events.length > 1 ) ?
+							arg : 
+							arg.slice( 1 ); 
+							
+						this._events[ e ][ q ].apply( this, payload ); 
 					}
 
 				}
 
 			}
+
+			// if an all event binding is made emit event to it
+	
 		}
 
 	};

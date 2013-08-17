@@ -34,10 +34,12 @@ module.exports = function(grunt) {
         src: files,
         dest: 'build/<%= pkg.name.toLowerCase() %>.js'
       }
+    },
+    simplemocha: {
+      all: { 
+        src: 'test/*.js' 
+      }
     }
-    // simplemocha: {
-    //   all: { src: 'test/*.js' }
-    // }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -46,7 +48,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.registerTask('minify', ['uglify']);
-  //grunt.registerTask('test', ['simplemocha', "jshint"]);
+  grunt.registerTask('test', ['simplemocha', "jshint"]);
   grunt.registerTask('build', ['concat', 'uglify']);
   grunt.registerTask("default", ["jshint", "concat", "uglify"]);
 
