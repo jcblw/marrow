@@ -1,5 +1,5 @@
 /*
- * Marrow.js - 0.0.14 
+ * Marrow.js - 0.0.15 
  * Description : Marrow is constructor that extends your constructors to help emit events and create a conventions to help manage components 
  * Project Url : https://github.com/jacoblwe20/marrow 
  * Author : Jacob Lowe <http://jacoblowe.me> 
@@ -16,13 +16,13 @@
 	// prototype of Marrow. returns the first prameter with an extended
 	// prototype
 
-	var Marrow = function( component, fn ){ 
-		if( !( this instanceof Marrow ) ){
+	var Marrow = function ( component, fn ) { 
+		if ( !( this instanceof Marrow ) ) {
 			return new Marrow( component );
 		}
 
 		// return it extended with our goodness
-		if( typeof fn === "function" ){
+		if ( typeof fn === 'function' ) {
 			fn( this );
 		}
 		// extend component 
@@ -35,11 +35,11 @@
 	// Marrow.plus is a mapping to the Marrow.prototype that
 	// allows the extension of Marrow without using plus
 
-	Marrow.prototype = Marrow.plus = {};
+	Marrow.prototype = Marrow.extend = {};
 
 	// Marrow::getState returns the state of the component
 
-	Marrow.prototype.getState = function(){
+	Marrow.prototype.getState = function () {
 		return this.__state;
 	};
 
@@ -134,18 +134,23 @@
 
 				for( var i = 0; i < events.length; i += 1 ){
 
-					if( events[i] === fn ){ 
-						delete events[ i ]; // remove specific fn
+					if( '' + events[i] === '' + fn ){ 
+						this._events[ event ][ i ] = null; // remove specific fn
 					}
 
 				}
 
 			}else{
-				events = []; // remove all events in group
+				this._events[ event ] = []; // remove all events in group
 			}
 
-		}else if( !event ){
-			this._events = {}; // remove all
+		} else {
+			if( 
+				typeof event === 'undefined' &&
+				typeof fn === 'undefined' 
+			) {
+				this._events = {}; // remove all
+			}
 		}
 
 	};
@@ -177,7 +182,7 @@
 
 			for( var i = 0; i < events.length; i += 1 ){
 
-				e = ( i ) ? events[ 0 ] + "_" + events[ i ]  : events[ i ];	
+				e = ( i ) ? events[ 0 ] + "_" + events[ i ] : events[ i ];	
 
 				if(
 					typeof this._events[ e ] === "object" && 
@@ -185,12 +190,19 @@
 				){
 
 					for( var q = 0; q < this._events[ e ].length; q += 1 ){
-						this._events[ e ][ q ].apply( this, arg.slice( 1 ) ); 
+						var payload = ( !( i ) && events.length > 1 ) ?
+							arg : 
+							arg.slice( 1 ); 
+							
+						this._events[ e ][ q ].apply( this, payload ); 
 					}
 
 				}
 
 			}
+
+			// if an all event binding is made emit event to it
+	
 		}
 
 	};
