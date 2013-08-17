@@ -75,6 +75,16 @@ component.on( 'app', function ( event, args ) {
 } );
 /* if `app:*` is emited */
 ```
+#### `marrow.once`
+
+practically the same exact thing as on but only will fire once.
+
+```javascript
+component.once( 'event', function ( args ) {
+	/* do stuff once */
+} );
+```
+
 
 #### `marrow.off`
 
