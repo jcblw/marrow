@@ -1,86 +1,147 @@
 ## Marrow
 
-Marrow.js is inside the bones of your framework, it is basic building blocks for your web components. It packs in a couple conventions that I use for my web components plus a event emitter.
+Marrow.js is inside the bones of your framework, it helps your component communicate.
 
-### Use
+## Api
 
-##### Extending component w/ Marrow
+### Getting Started
 
 ```javascript
-//  this is just a function I will use as a constructor
-var Component = function(ele){
-	this.ele = ele;
-};
+var Component = Marrow( function ( ) {
+	/* constructor */
+} );
+```
 
-// return extended component as well s passing it into `optional` callback;
-Component = Marrow(Component, function(self){
-	self.on("hello", function(){ 
-		console.log("world");
-	});
+#### Extending
+
+```javascipt
+var Component = Marrow( 
+	function( ) {
+		/* constructor */
+	},
+	function( _this ){
+		_this.method = function(){
+
+		};
+		_this.value = 123;
+	}
+);
+```
+#### Basic Inheritance
+
+```javascript
+var Component = Marrow( function ( ) {
+	/* constructor */
 });
 
-// and you can still extend your object the way you normally would
-Component.prototype.blah = function(){
-	// and still use Marrows method
+Component.prototype.method = function ( ) {
+	
 };
 
+Component.prototype.value = 123;
 ```
-
-or you can
+### Creating an Instance
 
 ```javascript
-var Component = Marrow(function(ele){
-	this.ele = ele;
-	this.emit("init", this.ele);
+var Component = Marrow( /* ... */ );
+var component = new Component( );
+```
+
+### Events
+
+Marrows events are very similiar to Backbones or Nodes event emitter. In Marrow you have an event `string`. That event  string helps identify what handlers to send the events & events payload to. We support base events and chaining events as well
+
+eg. `app:error` would be an event that has a base of `app` and subevent of `error` so if you were to bind to either `app` or `app:error` you would recieve the event data.
+
+##### Chaining
+
+Instead of allowing multiple levels of event bind there is only two levels `base:sub` but we also allow chaining so if there are multiple sub events you would like to emit to you could just chain the events together eg. `app:error:log`. Would emit to `app`, `app:log`, `app:error`, & `app:error:log`.
+
+#### `marrow.on`
+
+is a way to bind to a event emitted by the object. The first parameter is a String that defined what event type that you want to attach to. The second parameter is a function that will be queued and executed once the event fires.
+
+```javascript
+component.on( 'event', function ( args ) {
+	/* do stuff */
+} );
+```
+
+If a sub event is emitted and consumed by a base event the base event will also get the event string so that it can be handled correctly.
+
+```javascript
+component.on( 'app', function ( event, args ) {
+	/* do stuff */
+} );
+/* if `app:*` is emited */
+```
+
+#### `marrow.off`
+
+is a way to remove a binding to an event that would be attached with the on method. The first parameter is a String with the name of the event you want to unbind from this is optional, when omited all events will be unbound from object. The second parameter is a funcion that is a referance to a function that was bound to an event this will only remove that one binding. The second argument is also optional and when omitted will then unbind and bindings to the specified event in the first parameter.
+
+```javascript
+var fn = function fn () { /* ... */ };
+component.on( 'event', fn );
+component.off( 'event', fn );
+// remove all handlers
+component.off( 'event' );
+// remove everything
+component.off( );
+```
+
+#### `marrow.emit`
+
+is a way to fire off events to all the binding functions. The first parameter in emit is the event type as a String this is a referance used to bind the events to functions. Emit will also take any other parameters passed into the emits method and will pass them to the and event binds... only omiting the first parameter, the event type.
+
+```javascript
+component.on( "event", function( payload ){ 
+	/*Do stuff with payload*/
 });
+component.emit( "event", {} );
 ```
-### Calling Component
+
+### Building Methods
+
+Right now there is only one method in this section but in this section has allot of areas to expand to.
+
+#### `marrow.to`
+
+creates a method that will auto fire off an event with the same name.  The first parameter is type which is the name of the method and the name of the event to bind to, this is a String. The second argument is a function that you would want to excute when the newly created method is called. The third state parameter is state which is a Number... the number of the state you want you component to go into once the method is called. 
 
 ```javascript
-// it really depends how you define this
-var component = new Component(document.querySelector("body"));
+component.to( 'complete', function ( ) {
+	/* do stuff */
+}, 2 );
+component.on( 'complete', function ( ) { 
+	// will fire after all sync code in complete method are ran
+} );
+component.complete( );
 ```
 
-##### Using Events
+### States
+
+Marrow allows for multiple `number` states so that components can not only talk to each other but know what states other components are in.
+
+#### `marrow.getState`
+
+returns the state of the component... will alway be evaluted for a number
+
+#### `marrow.setState`
+
+first parameter gets set as value of the __state which is return in getState. Need to be a Number if not it will be evaluated as NaN.
 
 ```javascript
-var doStuffHandle = function(stuff){
-	console.log( stuff + " is being done"); //Cool Stuff is being done
-}
-
-// i can haz custom events with arguments
-component.on("doStuff", doStuffHandle);
-
-// build method and attach events to them
-component.to("doStuff", function(stuff){
-	// will a auto create method component::doingStuff
-	// will allow you to pass parameters though method to events
-	// will trigger event "doingStuff" when called
-}, 2); // optional state
-
-//use
-component.doStuff("Cool Stuff");
-
-// unbind a event binding
-component.off("doStuff", doStuffHandle);
-
-// unbind all event binding
-component.off("doStuff");
-
-// unbind all events
-component.off();
-
+component.setState( 3 );
+component.getState( ); // 3
 ```
 
-##### Using States
+using `marrow.to`
 
 ```javascript
-component.getState(); // will be 2 from doStuff
-component.setState(1);
-component.getState(); // will be set to 1
+component.to( 'complete', function ( ) { }, 5 );
+component.complete( );
+component.getState( ); // 5
 ```
 
-#### `Warning`
 
-
-Its in very early stages so some things are subject to change, I think the over arching ideas for events are set in stone but things like method creation may change.
