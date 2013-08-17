@@ -50,6 +50,6 @@ module.exports = function(grunt) {
   grunt.registerTask('minify', ['uglify']);
   grunt.registerTask('test', ['simplemocha', "jshint"]);
   grunt.registerTask('build', ['concat', 'uglify']);
-  grunt.registerTask("default", ["jshint", "concat", "uglify"]);
+  grunt.registerTask("default", ["simplemocha", "jshint", "concat", "uglify"]);
 
 };

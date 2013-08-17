@@ -111,6 +111,20 @@
 		return this;
 	};
 
+	// Marrow::once is a way to bind to an event once. see on for more
+	// details on event binding
+
+	Marrow.prototype.once = function ( event, callback ) {
+		var 
+		_this = this,
+		handle = function ( ) {
+			callback.apply( _this, arguments );
+			_this.off( event, handle );
+			_this.off( event, callback );
+		};
+		this.on( event, handle );
+	};
+
 	// Marrow::off is a way to remove a binding to an event that would
 	// be attached with the on method. The first parameter is a String
 	// with the name of the event you want to unbind from this is optional,
@@ -193,8 +207,10 @@
 						var payload = ( !( i ) && events.length > 1 ) ?
 							arg : 
 							arg.slice( 1 ); 
-							
-						this._events[ e ][ q ].apply( this, payload ); 
+
+						if( this._events[ e ][ q ] ){
+							this._events[ e ][ q ].apply( this, payload );
+						} 
 					}
 
 				}
