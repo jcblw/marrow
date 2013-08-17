@@ -42,6 +42,23 @@ describe( 'Marrow', function ( ) {
 				assert.equal( 'object', typeof component._events.yesfn );
 			} 
 		);
+
+		var 
+		Mock = Marrow(function Mock(){});
+		mock = new Mock();
+
+		it( 
+			'should bind to another objects events if the object has the' + 
+			'proper methods', 
+			function () {
+				var worked;
+				component.on( mock, 'hello', function ( ) {
+					worked = true;
+				});
+				mock.emit('hello');
+				assert.equal( true, worked );
+			} 
+		);
 	} );
 
 	describe( 'off', function ( ) {

@@ -83,6 +83,12 @@
 
 	Marrow.prototype.on = function( event, callback ){
 
+		// subscribing to another objects events
+		if( typeof event === 'object' ){
+			event = this._objBind( event, callback );
+			callback = arguments[2];
+		}
+
 		if(
 			typeof callback === "function" &&
 			typeof event === "string"
@@ -220,6 +226,33 @@
 			// if an all event binding is made emit event to it
 	
 		}
+
+	};
+
+	Marrow.prototype._objBind = function ( obj, event ) {
+		if ( 
+			!obj && 
+			typeof obj.on !== 'function' &&
+			typeof event !== 'string' 
+		) {
+			// bad
+			return null;
+		} 
+
+		var
+		_this = this;
+		// need a better system
+		_event =  '_:' + event;
+		handler = function ( ) {
+			var args = [].slice.call( arguments );
+			args.unshift( _event );
+			console.log( _event );
+			_this.emit.apply( _this, args );
+		};
+		// subscribe
+		obj.on( event, handler );
+
+		return _event;
 
 	};
 
