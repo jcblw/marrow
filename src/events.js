@@ -172,6 +172,8 @@
 
 	};
 
+	// Marrow._objBind binds to another object on event
+
 	Marrow.prototype._objBind = function ( obj, event ) {
 		if ( 
 			!obj && 
