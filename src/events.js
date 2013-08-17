@@ -54,6 +54,9 @@
 		return this;
 	};
 
+	// Marrow::once is a way to bind to an event once. see on for more
+	// details on event binding
+
 	Marrow.prototype.once = function ( event, callback ) {
 		var 
 		_this = this,
