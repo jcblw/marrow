@@ -227,4 +227,43 @@ describe( 'Marrow', function ( ) {
 		)
 
 	} )
+
+	component.off();
+
+	describe( 'once', function ( ) { 
+		it( 
+			'should only fire once', 
+			function () {
+				var count = 0;
+				component.once( 'once', function( ) {
+					count = count + 1;
+				} );
+				component.emit('once');
+				component.emit('once');
+				component.emit('once');
+				component.emit('once');
+				component.emit('once');
+				assert.equal( 1, count );
+				
+			} 
+		);
+
+		it(
+			'should receive all arguments passes from emit',
+			function ( ) {
+
+				component.once('hello', function ( ) {
+					assert.equal( 1, arguments[0] );
+					assert.equal( 0, arguments[1] );
+					assert.equal( 'string', arguments[2] );
+					assert.equal( true, arguments[3] );
+					assert.equal( 4, arguments.length );
+				});
+
+				component.emit('hello', 1, 0, 'string', true );
+
+			}
+		);
+	} );
+
 } )
