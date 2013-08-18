@@ -1,5 +1,6 @@
 (function(exports){
 
+	var DS = {};
 	// Marrow Constructor
 	// the first argument in the component which is just a function
 	// that acts as the initial constructor function for the component.
@@ -21,14 +22,29 @@
 			this.merge( this, extend );
 		}
 
+		var Construct = function Construct( ){
+			this.emit('initialize');
+			return component.apply( this, arguments );
+		};
 		// preserve constructor
 		this.constructor = component;
-		this.ts = +new Date();
-
+		this.on( 'initialize', function ( ) {
+			this._store( );
+		});
 		// extend component 
-		this.merge( component.prototype, this );
+		this.merge( Construct.prototype, component.prototype, this );		
 
-		return component;
+		return Construct;
+	};
+
+	Marrow.prototype._store = function ( ) {
+		if( !( DS[this.constructor.name] ) ){
+			DS[this.constructor.name] = [];
+		}
+		var store = DS[this.constructor.name];
+		store.push( this );			
+
+		this.ts = +new Date() + store.length;
 	};
 
 	// Marrow::merge will merge two objects togethe the merge is

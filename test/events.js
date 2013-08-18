@@ -110,28 +110,53 @@ describe( 'Marrow', function ( ) {
 		)
 
 		var 
-		Mock = Marrow( function Mock( ){ } );
-		mock = new Mock();
+		Off = Marrow( function Off( ){ } );
+		off = new Off();
 
 		it( 
-			'when binding to another objects should remove the handler for ' +
-			' that other object', 
+			'when binding to another objects events off should remove ' +
+			'the handler for that other object', 
 			function () {
 				var 
-				count,
+				count = 0,
 				handle = function handle( ) {
 					count = count + 1;
 				};
 
-				component.on( mock, 'hello', handle);
-				mock.emit('hello');
-				component.off( mock, 'hello', handle);
-				mock.emit('hello');
-				mock.emit('hello');
-				mock.emit('hello');
-				mock.emit('hello');
+				component.on( off, 'offTest', handle);
+				off.emit('offTest');
+
+				component.off( off, 'offTest', handle);
+				off.emit('offTest');
+				off.emit('offTest');
+				off.emit('offTest');
+				off.emit('offTest');
 				
 				assert.equal( 1, count );
+			} 
+		);
+
+		it( 
+			'when binding to another objects events off should remove ' +
+			'the all handles for a cetain event', 
+			function () {
+				var 
+				count = 0,
+				handle = function handle( ) {
+					count = count + 1;
+				};
+
+				component.on( off, 'hello', handle);
+				component.on( off, 'hello', handle);
+				component.on( off, 'hello', handle);
+
+				component.off( off, 'hello');
+				off.emit('hello');
+				off.emit('hello');
+				off.emit('hello');
+				off.emit('hello');
+				
+				assert.equal( 0, count );
 			} 
 		);
 	

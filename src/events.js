@@ -29,7 +29,7 @@
 		// subscribing to another objects events
 		if( typeof event === 'object' ){
 			event = this._objBind( event, callback );
-			callback = arguments[2];
+			callback = arguments[2];		
 		}
 
 		if(
@@ -40,7 +40,7 @@
 			var 
 			events = parseEventString(event),
 			// only support two layer events
-			e = ( events.length > 1 ) ? events[ 0 ] + "_" + events[ 1 ]  : events[ 0 ];
+			e = ( events.length > 1 ) ? events[ 0 ] + ":" + events[ 1 ]  : events[ 0 ];
 
 
 			if( !this._events ){
@@ -86,8 +86,8 @@
 	Marrow.prototype.off = function( event, fn ){
 
 		if( typeof event === 'object' ){
-			event = this._objUnbind( event, callback );
-			callback = arguments[2];	
+			event = this._objUnbind( event, fn );
+			fn = arguments[2];
 		}
 
 
@@ -99,6 +99,7 @@
 		){
 
 			var events = this._events[ event ];
+
 
 			if( typeof fn === "function" ){
 
@@ -152,7 +153,7 @@
 
 			for( var i = 0; i < events.length; i += 1 ){
 
-				e = ( i ) ? events[ 0 ] + "_" + events[ i ] : events[ i ];	
+				e = ( i ) ? events[ 0 ] + ":" + events[ i ] : events[ i ];	
 
 				if(
 					typeof this._events[ e ] === "object" && 
@@ -197,7 +198,7 @@
 		name = obj.constructor.name,
 		ts = obj.ts,
 		// need a better system
-		_event =  name + ':' + ts + ':' + event;
+		_event =  name + '_' + ts + ':' + event;
 		// need to store this
 		handler = function ( ) {
 			var args = [].slice.call( arguments );
@@ -226,7 +227,7 @@
 		name = obj.constructor.name,
 		ts = obj.ts,
 		// need a better system
-		_event =  name + ':' + ts + ':' + event;
+		_event =  name + '_' + ts + ':' + event;
 		
 		// unsubscribe ~ need refarnce to function
 		// obj.on( event, handler );
