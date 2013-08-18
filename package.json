@@ -1,6 +1,6 @@
 {
 	"name": "Marrow",
-	"version": "0.0.15",
+	"version": "0.0.20",
 	"private": false,
 	"author": "Jacob Lowe <http://jacoblowe.me>",
 	"description" : "Marrow is constructor that extends your constructors to help emit events and create a conventions to help manage components",
