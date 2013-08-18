@@ -1,5 +1,5 @@
 /*
- * Marrow.js - 0.0.15 
+ * Marrow.js - 0.0.20 
  * Description : Marrow is constructor that extends your constructors to help emit events and create a conventions to help manage components 
  * Project Url : https://github.com/jacoblwe20/marrow 
  * Author : Jacob Lowe <http://jacoblowe.me> 
@@ -8,6 +8,7 @@
 
 (function(exports){
 
+	var DS = {};
 	// Marrow Constructor
 	// the first argument in the component which is just a function
 	// that acts as the initial constructor function for the component.
@@ -29,14 +30,28 @@
 			this.merge( this, extend );
 		}
 
+		var Construct = function Construct( ){
+			this.emit('initialize');
+			return component.apply( this, arguments );
+		};
 		// preserve constructor
 		this.constructor = component;
-		this.ts = +new Date();
-
+		this.on( 'initialize', function ( ) {
+			this._store( );
+		});
 		// extend component 
-		this.merge( component.prototype, this );
+		this.merge( Construct.prototype, component.prototype, this );		
 
-		return component;
+		return Construct;
+	};
+
+	Marrow.prototype._store = function ( ) {
+		if( !( DS[this.constructor.name] ) ){
+			DS[this.constructor.name] = [];
+		}
+		var store = DS[this.constructor.name];
+		store.push( this );			
+		this.ts = +new Date() + store.length;
 	};
 
 	// Marrow::merge will merge two objects togethe the merge is
@@ -108,8 +123,8 @@
 
 		// subscribing to another objects events
 		if( typeof event === 'object' ){
-			event = this._objBind( event, callback );
-			callback = arguments[2];
+			event = this._objBind( event, callback, arguments[2]);
+			return null;		
 		}
 
 		if(
@@ -120,7 +135,7 @@
 			var 
 			events = parseEventString(event),
 			// only support two layer events
-			e = ( events.length > 1 ) ? events[ 0 ] + "_" + events[ 1 ]  : events[ 0 ];
+			e = ( events.length > 1 ) ? events[ 0 ] + ":" + events[ 1 ]  : events[ 0 ];
 
 
 			if( !this._events ){
@@ -164,6 +179,13 @@
 	// event in the first parameter
 
 	Marrow.prototype.off = function( event, fn ){
+
+		if( typeof event === 'object' ){
+			event = this._objUnbind( event, fn, arguments[2] );
+			return null;
+		}
+
+
 		if(
 			typeof this._events === "object" &&
 			typeof event === "string" &&
@@ -172,6 +194,7 @@
 		){
 
 			var events = this._events[ event ];
+
 
 			if( typeof fn === "function" ){
 
@@ -225,7 +248,7 @@
 
 			for( var i = 0; i < events.length; i += 1 ){
 
-				e = ( i ) ? events[ 0 ] + "_" + events[ i ] : events[ i ];	
+				e = ( i ) ? events[ 0 ] + ":" + events[ i ] : events[ i ];	
 
 				if(
 					typeof this._events[ e ] === "object" && 
@@ -254,32 +277,32 @@
 
 	// Marrow._objBind binds to another object on event
 
-	Marrow.prototype._objBind = function ( obj, event ) {
+	Marrow.prototype._objBind = function ( obj, event, fn ) {
 		if ( 
 			!obj && 
 			typeof obj.on !== 'function' &&
-			typeof event !== 'string' 
+			typeof event !== 'string' &&
+			typeof fn !== 'function'
 		) {
 			// bad
 			return null;
 		} 
+		obj.on( event, fn );
+		
+	};
 
-		var
-		_this = this,
-		name = obj.constructor.name,
-		ts = obj.ts,
-		// need a better system
-		_event =  name + ':' + ts + ':' + event;
-		handler = function ( ) {
-			var args = [].slice.call( arguments );
-			args.unshift( _event );
-			_this.emit.apply( _this, args );
-		};
-		// subscribe
-		obj.on( event, handler );
+	// Marrow._objBind removes binding
 
-		return _event;
-
+	Marrow.prototype._objUnbind = function ( obj, event, fn ) {
+		if ( 
+			!obj && 
+			typeof obj.off !== 'function' &&
+			typeof event !== 'string'
+		) {
+			// bad
+			return null;
+		} 
+		obj.off( event, fn );
 	};
 
 }(Marrow));
