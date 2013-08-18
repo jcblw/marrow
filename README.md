@@ -7,16 +7,20 @@ Marrow.js is inside the bones of your framework, it helps your component communi
 ### Getting Started
 
 ```javascript
-var Component = Marrow( function ( ) {
+var Component = Marrow( function Component( ) {
 	/* constructor */
 } );
 ```
 
+by adding in the second referance to the name in the function we are able to preserve the `component.constructor.name`
+
 #### Extending
+
+with a function
 
 ```javascipt
 var Component = Marrow( 
-	function( ) {
+	function Component( ) {
 		/* constructor */
 	},
 	function( _this ){
@@ -27,10 +31,25 @@ var Component = Marrow(
 	}
 );
 ```
+with a object
+
+```javascipt
+var Component = Marrow( 
+	function Component( ) {
+		/* constructor */
+	},
+	{
+		hello : function(){
+			this.emit( 'world' );
+		}
+	}
+);
+```
+
 #### Basic Inheritance
 
 ```javascript
-var Component = Marrow( function ( ) {
+var Component = Marrow( function Component( ) {
 	/* constructor */
 });
 
@@ -75,6 +94,18 @@ component.on( 'app', function ( event, args ) {
 } );
 /* if `app:*` is emited */
 ```
+
+Add just added to 0.0.17 the ability to bind to other objs events
+
+```javascript
+component.on( otherComponent, 'event', function ( args ) {
+	/* do stuff with another objects event */
+} );
+
+otherComponent.emit('event');
+```
+
+
 #### `marrow.once`
 
 practically the same exact thing as on but only will fire once.

@@ -108,6 +108,32 @@ describe( 'Marrow', function ( ) {
 				assert.equal( 1, component._events.universe.length );
 			}
 		)
+
+		var 
+		Mock = Marrow( function Mock( ){ } );
+		mock = new Mock();
+
+		it( 
+			'when binding to another objects should remove the handler for ' +
+			' that other object', 
+			function () {
+				var 
+				count,
+				handle = function handle( ) {
+					count = count + 1;
+				};
+
+				component.on( mock, 'hello', handle);
+				mock.emit('hello');
+				component.off( mock, 'hello', handle);
+				mock.emit('hello');
+				mock.emit('hello');
+				mock.emit('hello');
+				mock.emit('hello');
+				
+				assert.equal( 1, count );
+			} 
+		);
 	
 
 	} )

@@ -84,6 +84,13 @@
 	// event in the first parameter
 
 	Marrow.prototype.off = function( event, fn ){
+
+		if( typeof event === 'object' ){
+			event = this._objUnbind( event, callback );
+			callback = arguments[2];	
+		}
+
+
 		if(
 			typeof this._events === "object" &&
 			typeof event === "string" &&
@@ -173,6 +180,7 @@
 	};
 
 	// Marrow._objBind binds to another object on event
+	// returns an event name
 
 	Marrow.prototype._objBind = function ( obj, event ) {
 		if ( 
@@ -190,6 +198,7 @@
 		ts = obj.ts,
 		// need a better system
 		_event =  name + ':' + ts + ':' + event;
+		// need to store this
 		handler = function ( ) {
 			var args = [].slice.call( arguments );
 			args.unshift( _event );
@@ -197,6 +206,30 @@
 		};
 		// subscribe
 		obj.on( event, handler );
+
+		return _event;
+
+	};
+
+	Marrow.prototype._objUnbind = function ( obj, event ) {
+		if ( 
+			!obj && 
+			typeof obj.on !== 'function' &&
+			typeof event !== 'string' 
+		) {
+			// bad
+			return null;
+		} 
+
+		var
+		_this = this,
+		name = obj.constructor.name,
+		ts = obj.ts,
+		// need a better system
+		_event =  name + ':' + ts + ':' + event;
+		
+		// unsubscribe ~ need refarnce to function
+		// obj.on( event, handler );
 
 		return _event;
 
