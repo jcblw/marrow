@@ -185,13 +185,14 @@
 		} 
 
 		var
-		_this = this;
+		_this = this,
+		name = obj.constructor.name,
+		ts = obj.ts,
 		// need a better system
-		_event =  '_:' + event;
+		_event =  name + ':' + ts + ':' + event;
 		handler = function ( ) {
 			var args = [].slice.call( arguments );
 			args.unshift( _event );
-			console.log( _event );
 			_this.emit.apply( _this, args );
 		};
 		// subscribe

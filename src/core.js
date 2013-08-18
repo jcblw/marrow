@@ -8,26 +8,49 @@
 	// prototype of Marrow. returns the first prameter with an extended
 	// prototype
 
-	var Marrow = function ( component, fn ) { 
+	var Marrow = function ( component, extend ) { 
 		if ( !( this instanceof Marrow ) ) {
-			return new Marrow( component );
+			return new Marrow( component, extend );
+		}
+		
+		if ( typeof extend === 'function' ) {
+			extend( this );
 		}
 
-		// return it extended with our goodness
-		if ( typeof fn === 'function' ) {
-			fn( this );
+		if ( typeof extend === 'object' ) {
+			this.merge( this, extend );
 		}
+
+		// preserve constructor
+		this.constructor = component;
+		this.ts = +new Date();
+
 		// extend component 
-		component.prototype = this;
-		
+		this.merge( component.prototype, this );
 
 		return component;
 	};
 
-	// Marrow.plus is a mapping to the Marrow.prototype that
-	// allows the extension of Marrow without using plus
+	// Marrow::merge will merge two objects togethe the merge is
+	// not recursive and is only applied to the first level of the 
+	// objects. The first parameter is the object to merg into and
+	// the rest of the parameters are the objects to merge into
+	// the first obj.
 
-	Marrow.prototype = Marrow.extend = {};
+	Marrow.prototype.merge = function ( ) {
+		var obj = arguments[ 0 ];
+		if ( typeof obj === 'object' ) {
+			for ( var i = 0; i <= arguments.length - 1; i += 1 ) {
+				var _obj =  arguments[ i ];
+				if ( typeof _obj === 'object' ) {
+					for ( var _key in _obj ) {
+						obj[ _key ] = _obj[ _key ];
+					}
+				}
+			}
+			return obj;
+		}
+	};
 
 	// Marrow::getState returns the state of the component
 

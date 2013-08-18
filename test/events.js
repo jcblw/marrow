@@ -44,7 +44,7 @@ describe( 'Marrow', function ( ) {
 		);
 
 		var 
-		Mock = Marrow(function Mock(){});
+		Mock = Marrow( function Mock( ){ } );
 		mock = new Mock();
 
 		it( 
