@@ -196,6 +196,8 @@
 		
 	};
 
+	// Marrow._objBind removes binding
+
 	Marrow.prototype._objUnbind = function ( obj, event, fn ) {
 		if ( 
 			!obj && 

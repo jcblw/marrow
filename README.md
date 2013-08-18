@@ -95,7 +95,7 @@ component.on( 'app', function ( event, args ) {
 /* if `app:*` is emited */
 ```
 
-Add just added to 0.0.17 the ability to bind to other objs events
+Just added to 0.0.17 the ability to bind to other objs events
 
 ```javascript
 component.on( otherComponent, 'event', function ( args ) {
@@ -129,6 +129,13 @@ component.off( 'event', fn );
 component.off( 'event' );
 // remove everything
 component.off( );
+```
+
+removing bindings to other object is also possible
+
+```javascript
+component.off( otherComponent, 'event', handle );
+component.off( otherComponent, 'event' );
 ```
 
 #### `marrow.emit`

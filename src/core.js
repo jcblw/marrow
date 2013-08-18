@@ -43,7 +43,6 @@
 		}
 		var store = DS[this.constructor.name];
 		store.push( this );			
-
 		this.ts = +new Date() + store.length;
 	};
 
