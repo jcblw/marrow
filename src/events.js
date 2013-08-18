@@ -28,8 +28,8 @@
 
 		// subscribing to another objects events
 		if( typeof event === 'object' ){
-			event = this._objBind( event, callback );
-			callback = arguments[2];		
+			event = this._objBind( event, callback, arguments[2]);
+			return null;		
 		}
 
 		if(
@@ -86,8 +86,8 @@
 	Marrow.prototype.off = function( event, fn ){
 
 		if( typeof event === 'object' ){
-			event = this._objUnbind( event, fn );
-			fn = arguments[2];
+			event = this._objUnbind( event, fn, arguments[2] );
+			return null;
 		}
 
 
@@ -181,59 +181,31 @@
 	};
 
 	// Marrow._objBind binds to another object on event
-	// returns an event name
 
-	Marrow.prototype._objBind = function ( obj, event ) {
+	Marrow.prototype._objBind = function ( obj, event, fn ) {
 		if ( 
 			!obj && 
 			typeof obj.on !== 'function' &&
-			typeof event !== 'string' 
+			typeof event !== 'string' &&
+			typeof fn !== 'function'
 		) {
 			// bad
 			return null;
 		} 
-
-		var
-		_this = this,
-		name = obj.constructor.name,
-		ts = obj.ts,
-		// need a better system
-		_event =  name + '_' + ts + ':' + event;
-		// need to store this
-		handler = function ( ) {
-			var args = [].slice.call( arguments );
-			args.unshift( _event );
-			_this.emit.apply( _this, args );
-		};
-		// subscribe
-		obj.on( event, handler );
-
-		return _event;
-
+		obj.on( event, fn );
+		
 	};
 
-	Marrow.prototype._objUnbind = function ( obj, event ) {
+	Marrow.prototype._objUnbind = function ( obj, event, fn ) {
 		if ( 
 			!obj && 
-			typeof obj.on !== 'function' &&
-			typeof event !== 'string' 
+			typeof obj.off !== 'function' &&
+			typeof event !== 'string'
 		) {
 			// bad
 			return null;
 		} 
-
-		var
-		_this = this,
-		name = obj.constructor.name,
-		ts = obj.ts,
-		// need a better system
-		_event =  name + '_' + ts + ':' + event;
-		
-		// unsubscribe ~ need refarnce to function
-		// obj.on( event, handler );
-
-		return _event;
-
+		obj.off( event, fn );
 	};
 
 }(Marrow));
