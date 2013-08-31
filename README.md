@@ -105,6 +105,20 @@ component.on( otherComponent, 'event', function ( args ) {
 otherComponent.emit('event');
 ```
 
+Added in 0.1.0 the ability to bind to constructor events, so every time a `new` instance is made after the event has be registered will have the event listener automatically subscribed to it.
+
+```javascript
+var Foo = Marrow( function Foo( ) { });
+component.on( Foo, 'hello', function ( ) {
+	console.log('Foo::hello fired');
+});
+var bar = new Foo();
+bar.emit('hello');
+// Foo::hello fired
+```
+
+Threa lightly with this one, there currently is no way to unbind these events, unless unbound via the instance via `bar.off('hello')`
+
 
 #### `marrow.once`
 
