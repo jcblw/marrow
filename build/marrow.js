@@ -8,7 +8,6 @@
 
 (function(exports){
 
-	var DS = {};
 	// Marrow Constructor
 	// the first argument in the component which is just a function
 	// that acts as the initial constructor function for the component.
@@ -31,30 +30,42 @@
 		}
 
 		var Construct = function Construct( ){
-			this.emit('initialize');
-			return component.apply( this, arguments );
-		};
+				this._init();
+				return component.apply( this, arguments );
+			};		
+
 		// preserve constructor
 		this.constructor = component;
-		this.on( 'initialize', function ( ) {
-			this._store( );
-		});
+
 		// extend component 
-		this.merge( Construct.prototype, component.prototype, this );		
+		Construct.prototype = component.prototype;
+		Construct._name = component.name;
+		this.merge( Construct.prototype, this );		
 
 		return Construct;
 	};
 
-	Marrow.prototype._store = function ( ) {
-		if( !( DS[this.constructor.name] ) ){
-			DS[this.constructor.name] = [];
+	// data store object
+	Marrow.DS = {};
+
+	Marrow.prototype._init = function ( ) {
+		this.emit('initialize');
+		this._store( );
+		if ( 'tasker' in this ) {
+			this.tasker( 'initialize', this );
 		}
-		var store = DS[this.constructor.name];
+	};
+
+	Marrow.prototype._store = function ( ) {
+		if( !( Marrow.DS[this.constructor.name] ) ){
+			Marrow.DS[this.constructor.name] = [];
+		}
+		var store = Marrow.DS[this.constructor.name];
 		store.push( this );			
 		this.ts = +new Date() + store.length;
 	};
 
-	// Marrow::merge will merge two objects togethe the merge is
+	// Marrow::merge will merge two objects together the merge is
 	// not recursive and is only applied to the first level of the 
 	// objects. The first parameter is the object to merg into and
 	// the rest of the parameters are the objects to merge into
@@ -123,7 +134,12 @@
 
 		// subscribing to another objects events
 		if( typeof event === 'object' ){
-			event = this._objBind( event, callback, arguments[2]);
+			this._objBind( event, callback, arguments[2]);
+			return null;		
+		}
+
+		if( typeof event === 'function' ){
+			this._contructorBind( event, callback, arguments[2] );
 			return null;		
 		}
 
@@ -305,6 +321,37 @@
 		obj.off( event, fn );
 	};
 
+	// Marrow._instanceBind binds events to an instance using task
+
+	Marrow.prototype._contructorBind = function ( instance, event, fn ) {
+		if (
+			typeof instance !== 'function' ||
+			typeof event !== 'string' ||
+			typeof fn !== 'function' ||
+			!( 'registerTask' in this )
+		){
+			// bad
+			return null;
+		}
+
+		var constructor = instance._name;
+
+		this.registerTask( '_contructorBind', 
+			function ( _this ) {
+				if ( _this && typeof _this.on === 'function' ) {
+					_this.on( event, fn );
+				}
+			}, {
+				instance : constructor,
+				// this is when we want to bind to the instance
+				event : 'initialize'
+			}
+		);
+
+		//need a method to look up already created
+		//instances especially for un binding events
+	};
+
 }(Marrow));
 
 (function(Marrow){
@@ -358,3 +405,76 @@
 	};
 
 }(Marrow));
+
+( function ( Marrow ) {
+
+	// builds out a task name
+	Marrow.prototype._taskName = function ( task, options ) {
+		var name = task;
+
+		if ( options.event ) {
+			name += ':_' + ( options.event || 'all' );
+		}
+
+		if ( options.instance ) {
+			name += ':' + ( options.instance || '' );
+		}
+		// taskName:_position:instance
+
+		return name;
+
+	};
+
+	// registers a task
+	Marrow.prototype.registerTask = function ( task, fn, options ) {
+		// needs better type testing
+
+		if ( !Marrow.DS._tasks ) {
+			Marrow.DS._tasks = {};
+		}
+
+		var 
+		_task = {};
+
+	
+		_task.fn = fn;
+		_task.options = options;
+
+		Marrow.DS._tasks[ this._taskName( task, options ) ] = _task;
+
+	};
+
+	// checks for task registered under a certain name
+	Marrow.prototype.tasker = function ( events, instance ) {
+
+		if ( 
+			typeof events !== 'string' ||
+			typeof instance !== 'object' || 
+			typeof instance.constructor !== 'function'
+		) {
+			if( 'console' in parent ) {
+				// lets give a clue
+				console.error( 'Could not run Marrow::tasker with the' +
+					' arguments >' + events.toString() + 
+					', ' + instance.toString()   
+				);
+			}
+			return false;
+		}
+
+		var tasks = Marrow.DS._tasks,
+			name = instance.constructor.name;
+
+		for( var key in tasks ) {
+			var value = tasks[ key ];
+			if ( new RegExp( ':_' + events + ':' + name ).test( key ) ) {
+				value.fn( instance );
+			}
+		}
+
+		return true;
+	};
+
+
+
+ } ( Marrow ));

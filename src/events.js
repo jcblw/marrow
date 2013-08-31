@@ -28,7 +28,12 @@
 
 		// subscribing to another objects events
 		if( typeof event === 'object' ){
-			event = this._objBind( event, callback, arguments[2]);
+			this._objBind( event, callback, arguments[2]);
+			return null;		
+		}
+
+		if( typeof event === 'function' ){
+			this._contructorBind( event, callback, arguments[2] );
 			return null;		
 		}
 
@@ -208,6 +213,37 @@
 			return null;
 		} 
 		obj.off( event, fn );
+	};
+
+	// Marrow._instanceBind binds events to an instance using task
+
+	Marrow.prototype._contructorBind = function ( instance, event, fn ) {
+		if (
+			typeof instance !== 'function' ||
+			typeof event !== 'string' ||
+			typeof fn !== 'function' ||
+			!( 'registerTask' in this )
+		){
+			// bad
+			return null;
+		}
+
+		var constructor = instance._name;
+
+		this.registerTask( '_contructorBind', 
+			function ( _this ) {
+				if ( _this && typeof _this.on === 'function' ) {
+					_this.on( event, fn );
+				}
+			}, {
+				instance : constructor,
+				// this is when we want to bind to the instance
+				event : 'initialize'
+			}
+		);
+
+		//need a method to look up already created
+		//instances especially for un binding events
 	};
 
 }(Marrow));

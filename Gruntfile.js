@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 
   // Project configuration
-  var files = ["src/core.js", "src/events.js", "src/build.js"];
+  var files = ["src/core.js", "src/events.js", "src/build.js", "src/task.js"];
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),

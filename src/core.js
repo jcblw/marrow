@@ -1,6 +1,5 @@
 (function(exports){
 
-	var DS = {};
 	// Marrow Constructor
 	// the first argument in the component which is just a function
 	// that acts as the initial constructor function for the component.
@@ -23,30 +22,42 @@
 		}
 
 		var Construct = function Construct( ){
-			this.emit('initialize');
-			return component.apply( this, arguments );
-		};
+				this._init();
+				return component.apply( this, arguments );
+			};		
+
 		// preserve constructor
 		this.constructor = component;
-		this.on( 'initialize', function ( ) {
-			this._store( );
-		});
+
 		// extend component 
-		this.merge( Construct.prototype, component.prototype, this );		
+		Construct.prototype = component.prototype;
+		Construct._name = component.name;
+		this.merge( Construct.prototype, this );		
 
 		return Construct;
 	};
 
-	Marrow.prototype._store = function ( ) {
-		if( !( DS[this.constructor.name] ) ){
-			DS[this.constructor.name] = [];
+	// data store object
+	Marrow.DS = {};
+
+	Marrow.prototype._init = function ( ) {
+		this.emit('initialize');
+		this._store( );
+		if ( 'tasker' in this ) {
+			this.tasker( 'initialize', this );
 		}
-		var store = DS[this.constructor.name];
+	};
+
+	Marrow.prototype._store = function ( ) {
+		if( !( Marrow.DS[this.constructor.name] ) ){
+			Marrow.DS[this.constructor.name] = [];
+		}
+		var store = Marrow.DS[this.constructor.name];
 		store.push( this );			
 		this.ts = +new Date() + store.length;
 	};
 
-	// Marrow::merge will merge two objects togethe the merge is
+	// Marrow::merge will merge two objects together the merge is
 	// not recursive and is only applied to the first level of the 
 	// objects. The first parameter is the object to merg into and
 	// the rest of the parameters are the objects to merge into
