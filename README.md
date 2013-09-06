@@ -2,6 +2,14 @@
 
 Marrow.js is inside the bones of your framework, it helps your component communicate.
 
+Its also on npm
+
+```shell
+npm install marrow
+```
+
+Marrow was made for frontend, but it does not specifically use the `DOM` so it works on node as well.
+
 ## Api
 
 ### Getting Started
