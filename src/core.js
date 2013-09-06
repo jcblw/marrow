@@ -41,10 +41,12 @@
 	Marrow.DS = {};
 
 	Marrow.prototype._init = function ( ) {
-		this.emit('initialize');
 		this._store( );
 		if ( 'tasker' in this ) {
 			this.tasker( 'initialize', this );
+		}
+		if ( 'emit' in this ) {
+			this.emit('initialize');
 		}
 	};
 

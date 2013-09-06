@@ -1,5 +1,7 @@
 (function(Marrow){
 
+	Marrow.prototype = Marrow.prototype || {}; 
+
 	var 
 	// some local utilities
 	delimiter = /\:/g,
@@ -246,4 +248,4 @@
 		//instances especially for un binding events
 	};
 
-}(Marrow));
+}( 'function' === typeof Marrow ? Marrow : this ));

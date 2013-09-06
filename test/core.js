@@ -1,5 +1,5 @@
 /* global to emulate client */
-Marrow = require('../src/core').Marrow;
+//Marrow = require('../src/core').Marrow;
 
 var 
 assert = require( 'assert' ),

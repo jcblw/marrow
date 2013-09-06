@@ -1,5 +1,7 @@
 (function(Marrow){
 
+	Marrow.prototype = Marrow.prototype || {}; 
+
 	// Marrow::_extend creates a method in the prototype of the
 	// object, the first parameter is type (String), which defines the name
 	// of the method and allows binding to events on the method.
@@ -48,4 +50,4 @@
 
 	};
 
-}(Marrow));
+}( 'function' === typeof Marrow ? Marrow : this ));

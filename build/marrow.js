@@ -49,10 +49,12 @@
 	Marrow.DS = {};
 
 	Marrow.prototype._init = function ( ) {
-		this.emit('initialize');
 		this._store( );
 		if ( 'tasker' in this ) {
 			this.tasker( 'initialize', this );
+		}
+		if ( 'emit' in this ) {
+			this.emit('initialize');
 		}
 	};
 
@@ -105,6 +107,8 @@
 }(this));
 
 (function(Marrow){
+
+	Marrow.prototype = Marrow.prototype || {}; 
 
 	var 
 	// some local utilities
@@ -352,9 +356,11 @@
 		//instances especially for un binding events
 	};
 
-}(Marrow));
+}( 'function' === typeof Marrow ? Marrow : this ));
 
 (function(Marrow){
+
+	Marrow.prototype = Marrow.prototype || {}; 
 
 	// Marrow::_extend creates a method in the prototype of the
 	// object, the first parameter is type (String), which defines the name
@@ -404,9 +410,12 @@
 
 	};
 
-}(Marrow));
+}( 'function' === typeof Marrow ? Marrow : this ));
 
 ( function ( Marrow ) {
+
+	Marrow.prototype = Marrow.prototype || {}; 
+	Marrow.DS = Marrow.DS || {}; 
 
 	// builds out a task name
 	Marrow.prototype._taskName = function ( task, options ) {
@@ -477,4 +486,4 @@
 
 
 
- } ( Marrow ));
+ } ( 'function' === typeof Marrow ? Marrow : this ));

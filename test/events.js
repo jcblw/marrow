@@ -1,9 +1,10 @@
 /* global to emulate client */
-Marrow = require('../src/core').Marrow;
+// Marrow = require('../src/core').Marrow;
 
-var 
+var
+Marrow = require( '../index' ), 
 assert = require( 'assert' ),
-events = require('../src/events'),
+// events = require('../src/events'),
 fn = function fn( ) { 
 	var hell0 = 1;
 };

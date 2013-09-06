@@ -1,5 +1,8 @@
 ( function ( Marrow ) {
 
+	Marrow.prototype = Marrow.prototype || {}; 
+	Marrow.DS = Marrow.DS || {}; 
+
 	// builds out a task name
 	Marrow.prototype._taskName = function ( task, options ) {
 		var name = task;
@@ -69,4 +72,4 @@
 
 
 
- } ( Marrow ));
+ } ( 'function' === typeof Marrow ? Marrow : this ));
