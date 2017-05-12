@@ -1,5 +1,7 @@
 ## Marrow
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/jcblw/marrow.svg)](https://greenkeeper.io/)
+
 Marrow.js is inside the bones of your framework, it helps your component communicate.
 
 Its also on npm
